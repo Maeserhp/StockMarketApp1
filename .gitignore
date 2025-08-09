@@ -1,0 +1,80 @@
+# =========================
+# .NET Ignored Files
+# =========================
+
+# Build results
+**/bin/
+**/obj/
+**/*.user
+**/*.rsuser
+**/*.suo
+**/*.cache
+**/*.pdb
+**/*.ilk
+**/*.log
+**/*.vspscc
+
+# Rider IDE files
+.idea/
+
+# .NET Core / ASP.NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Azure Functions local settings file
+local.settings.json
+
+# =========================
+# Angular / Node.js Files
+# =========================
+
+# Node modules
+/frontend/sock-market-ui/node_modules/
+**/node_modules/
+
+# Angular build output
+/frontend/sock-market-ui/dist/
+/frontend/sock-market-ui/out-tsc/
+
+# Environment files (optional if you want to keep them private)
+frontend/sock-market-ui/src/environments/*.ts
+
+# =========================
+# IDE and Editor Files
+# =========================
+
+# VS Code settings folder
+.vscode/
+
+# JetBrains Rider
+.idea/
+
+# =========================
+# OS Files
+# =========================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# Others
+# =========================
+
+# Log files
+*.log
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Publish output folder
+publish/
+/.vs
+/StockMarketApp/.vs/StockMarketApp
