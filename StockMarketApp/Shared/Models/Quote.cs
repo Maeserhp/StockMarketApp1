@@ -18,5 +18,7 @@ namespace Shared.Models
 
         [JsonPropertyName("pc")]
         public decimal PreviousClosePrice { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }
