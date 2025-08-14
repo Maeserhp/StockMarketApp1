@@ -27,26 +27,30 @@ namespace StockMarketApp.APIWorker
             _db = _cosmosClient.GetDatabase(_configuration["CosmosDb:Database"]);
         }
 
-        public async Task<List<StockSymbol>> GetSymbolsList(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<List<string>> GetSymbolsList(CancellationToken cancellationToken = new CancellationToken())
         {
-            var stockSymbolContainer = _db.GetContainer("StockSymbols");
+            var stockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
 
-            List<StockSymbol> symbols = new List<StockSymbol>();
+            List<StockHistory> StockHistories = new List<StockHistory>();
 
             //var query = new QueryDefinition("SELECT * FROM c");
-            FeedIterator<StockSymbol> iterator = stockSymbolContainer.GetItemQueryIterator<StockSymbol>();
+            FeedIterator<StockHistory> iterator = stockHistoryContainer.GetItemQueryIterator<StockHistory>();
 
             //iterates through each page of results
             while (iterator.HasMoreResults)
             {
-                FeedResponse<StockSymbol> response = await iterator.ReadNextAsync(cancellationToken);
+                FeedResponse<StockHistory> response = await iterator.ReadNextAsync(cancellationToken);
                 foreach (var item in response)
                 {
                     _logger.LogInformation($"Found item: {item}");
-                    symbols.Add(item);
+                    StockHistories.Add(item);
                 }
             }
 
+            List<string> symbols = new List<string>() { };
+            foreach (var history in StockHistories) { 
+                symbols.Add(history.id);
+            }
             return symbols;
         }
 
