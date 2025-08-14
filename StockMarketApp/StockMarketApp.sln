@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarketApp.Scraper.Work
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{4F175D06-7FF3-4B33-BA58-C033BBDF1B82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarketApp.APIWorker", "StockMarketApp.APIWorker\StockMarketApp.APIWorker.csproj", "{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarketApp.APIWorker1", "StockMarketApp.APIWorker1\StockMarketApp.APIWorker1.csproj", "{D1A673DF-FD62-46D8-B369-E257B92486A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{4F175D06-7FF3-4B33-BA58-C033BBDF1B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F175D06-7FF3-4B33-BA58-C033BBDF1B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F175D06-7FF3-4B33-BA58-C033BBDF1B82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A673DF-FD62-46D8-B369-E257B92486A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A673DF-FD62-46D8-B369-E257B92486A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A673DF-FD62-46D8-B369-E257B92486A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A673DF-FD62-46D8-B369-E257B92486A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

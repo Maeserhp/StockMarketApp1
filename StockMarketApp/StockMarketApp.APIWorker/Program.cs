@@ -1,14 +1,16 @@
 using Microsoft.Azure.Cosmos;
-using StockMarketApp.Scraper.Worker;
+using StockMarketApp.APIWorker;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Configuration.AddUserSecrets<Program>();
-}
+// Add services to the container.
 
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<Worker>();
+//builder.Services.AddHostedService<Worker>();
 builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 {
     var endpoint = builder.Configuration["CosmosDB:Endpoint"];
@@ -28,7 +30,19 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 
 });
 
-var host = builder.Build();
+var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-host.Run();
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
