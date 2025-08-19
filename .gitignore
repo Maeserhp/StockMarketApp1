@@ -29,16 +29,16 @@ local.settings.json
 # Angular / Node.js Files
 # =========================
 
-# Node modules
-/frontend/sock-market-ui/node_modules/
+# Node module
+/StockMarketAppFrontend/StockMarketApp.spa/node_modules/
 **/node_modules/
 
 # Angular build output
-/frontend/sock-market-ui/dist/
-/frontend/sock-market-ui/out-tsc/
+/StockMarketAppFrontend/StockMarketApp.spa/dist/
+/StockMarketAppFrontend/sStockMarketApp.spa/out-tsc/
 
 # Environment files (optional if you want to keep them private)
-frontend/sock-market-ui/src/environments/*.ts
+StockMarketAppFrontend/StockMarketApp.spa/src/environments/*.ts
 
 # =========================
 # IDE and Editor Files
@@ -79,3 +79,4 @@ publish/
 /.vs
 /StockMarketApp/.vs/StockMarketApp
 /StockMarketApp/.vs/ProjectEvaluation
+/StockMarketApp/StockMarketApp.APIWorker/Properties/PublishProfiles/stockmarketapp-apiworker.pubxml
