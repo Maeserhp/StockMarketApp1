@@ -1,0 +1,159 @@
+/* Container fills the viewport, centers content */
+h1{
+      font-family: 'Segoe UI', Helvetica, Arial, sans-serif; /* modern sans-free alternative */
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif; /* modern sans-free alternative */
+  background: #fafafa;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3rem 1rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 2.2rem;
+  margin-bottom: 3rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Styling for the dropdown menu container */
+.dropdown-menu {
+  position: absolute; /* Allows it to appear on top of other content */
+  top: 71%; /* Positions the dropdown directly below the parent element */
+  left: 0;
+  width: 100%; /* Matches the width of the input field */
+  z-index: 1000; /* Ensures the dropdown appears on top of other elements */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the list itself */
+.search-results {
+  list-style-type: none; /* Removes the bullet points */
+  margin: 0;
+  padding: 0;
+}
+
+/* Styling for each list item (the "boxes") */
+.search-results li {
+  padding: 10px 15px;
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+  border-bottom: 1px solid #eee; /* Adds a line between items */
+}
+
+/* Hover effect for list items */
+.search-results li:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Shared card style for sections */
+.card {
+  background: #fff;
+  padding: 2rem;
+  margin: 1rem 0;
+  border: 3px solid #ddd;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Search input and button */
+.search-input {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 0.8rem;
+  outline: none;
+}
+/* Optional: additional styling for the input and button */
+/* .search-input {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+} */
+
+.search-section {
+  position: relative; /* Necessary for the absolute positioning of the dropdown */
+}
+
+.search-input:focus {
+  border-color: #0078d7;
+}
+
+.actions .btn {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 0.8rem;
+}
+
+/* Buttons */
+.btn {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.btn.primary {
+  background: #0078d7;
+  color: #fff;
+  border-color: #0078d7;
+}
+
+.btn.primary:hover {
+  background: #005ea6;
+  border-color: #005ea6;
+}
+
+.btn.secondary {
+  background: #fff;
+  color: #0078d7;
+  border-color: #0078d7;
+}
+
+.btn.secondary:hover {
+  background: #f0f8ff;
+}
+
+/* Results list */
+.results ul {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.results li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1.1rem;
+}
+
+.results li:last-child {
+  border-bottom: none;
+}
+
+.no-results {
+  font-size: 1rem;
+  color: #666;
+}

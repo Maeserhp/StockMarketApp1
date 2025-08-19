@@ -1,0 +1,39 @@
+<div class="container">
+  <!-- Header -->
+  <h1 class="title">Stock Market Scraper</h1>
+
+  <!-- Search -->
+  <div class="card search-section">
+     <input 
+    type="text" 
+    placeholder="Search stocks..." 
+    [(ngModel)]="searchTerm"
+    (input)="onSearchChange()"
+    class="search-input">
+
+    <div class="dropdown-menu" *ngIf="searchTerm && filteredItems.length > 0">
+      <ul class="search-results">
+        <li *ngFor="let item of filteredItems" (click)="onItemSelected(item)">
+          {{ item }}
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+<!-- Results -->
+  <div class="card results" *ngIf="queries && queries.length > 0;">
+    <ul>
+      <li *ngFor="let query of queries">
+        <!-- {{ stock.symbol }} — {{ stock.name }} -->
+      </li>
+    </ul>
+  </div>
+
+  <!-- Actions -->
+  <div class="card actions">
+    <button class="btn primary" (click)="onAddStock()">+ Add Stock</button>
+    <button class="btn secondary" (click)="onRunUpdate()">Run Daily Update</button>
+  </div>
+
+</div>
