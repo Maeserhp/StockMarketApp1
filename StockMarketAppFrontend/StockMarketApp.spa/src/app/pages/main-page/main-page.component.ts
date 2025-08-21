@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { StockService } from '../../services/stock.service';
+import { StockService } from '../../services/stock-service/stock.service';
 // import { HttpClientModule } from '@angular/common/http';
 
 
@@ -13,26 +13,10 @@ import { StockService } from '../../services/stock.service';
   styleUrl: './main-page.component.css'
 })
 export class MainPageComponent implements OnInit {
-   items: string[] = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Grape',
-    'Lemon',
-    'Mango',
-    'Orange',
-    'Peach',
-    'Pear'
-  ];
+   items: string[] = [];
   filteredItems: string[] = [];
-
-  // The search term from the input field
   searchTerm: string = '';
-  queries = [
-    // { symbol: 'AAPL', name: 'Apple Inc.' },
-    // { symbol: 'MSFT', name: 'Microsoft Corp.' }
-  ];
+  queries = [];
 
   constructor(private stockService: StockService) { }
 

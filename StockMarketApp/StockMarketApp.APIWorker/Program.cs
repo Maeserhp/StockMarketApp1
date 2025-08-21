@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StockMarketApp.APIWorker;
 using StockMarketApp.APIWorker.Authentication;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,35 +16,7 @@ if (builder.Environment.IsDevelopment())
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x =>
-{
-    //Set up Swagger Api Key authorization
-    x.AddSecurityDefinition("ApiKey", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Description = "The API Key to access the API",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Name = "x-api-key",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Scheme = "ApiKeyScheme"
-    });
-
-    var scheme = new OpenApiSecurityScheme
-    {
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "ApiKey"
-        },
-        In = ParameterLocation.Header
-    };
-
-    var requirement = new OpenApiSecurityRequirement
-    {
-        {scheme, new List<string>() }
-    };
-    x.AddSecurityRequirement(requirement);
-
-});
+builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<Worker>();
 //builder.Services.AddHostedService<Worker>();
 
@@ -64,6 +39,38 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 
 });
 
+// Configure JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"], // The app setting
+        ValidAudience = builder.Configuration["Jwt:Audience"], // The app setting
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // The secret key
+    };
+});
+
+// Add CORS policy for your Angular app
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Change to your Angular app's URL
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -73,12 +80,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
 app.UseHttpsRedirection();
+app.UseCors(); // Use the CORS policy
 
-app.UseMiddleware<ApiKeyAuthMiddleware>();
-
+app.UseAuthentication(); // Must be before app.UseAuthorization()
 app.UseAuthorization();
 
 app.MapControllers();

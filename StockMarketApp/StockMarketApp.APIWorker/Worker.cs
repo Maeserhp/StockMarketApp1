@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Shared.Models;
+using System.Linq;
 using System.Security.Policy;
 using System.Text.Json;
 
@@ -232,7 +233,7 @@ namespace StockMarketApp.APIWorker
                 FeedResponse<StockHistory> response = await iterator.ReadNextAsync(cancellationToken);
                 foreach (var item in response)
                 {
-                    _logger.LogInformation($"Found item: {item}");
+                    _logger.LogInformation($"Found Tracked Stock: {item}");
                     stocks.Add(item);
                 }
             }
