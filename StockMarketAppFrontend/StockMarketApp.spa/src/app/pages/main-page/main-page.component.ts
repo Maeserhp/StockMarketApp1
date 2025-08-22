@@ -10,13 +10,17 @@ import { StockService } from '../../services/stock-service/stock.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './main-page.component.html',
-  styleUrl: './main-page.component.css'
+  styleUrls: [
+    '../../styles/shared.css',
+    './main-page.component.css'
+  ]
 })
 export class MainPageComponent implements OnInit {
-   items: string[] = [];
+  items: string[] = [];
+  selectedItem: string = 'Test';
   filteredItems: string[] = [];
   searchTerm: string = '';
-  queries = [];
+  queries: string[] = [];
 
   constructor(private stockService: StockService) { }
 
@@ -34,19 +38,39 @@ export class MainPageComponent implements OnInit {
   }
   
 
- onSearchChange(): void {
+  onSearchChange(): void {
     const term = this.searchTerm.toLowerCase();
     this.filteredItems = this.items.filter(item =>
       item.toLowerCase().includes(term)
     );
   }
 
+  onSearchFocus() {
+    if(this.searchTerm == ''){
+      this.filteredItems = this.items;
+    }
+  }
+
+  onSearchBlur() {
+    // this.filteredItems = [];
+    // this.searchTerm = '';
+
+    // Add a small delay so the (click) event on the dropdown item can fire first
+    setTimeout(() => {
+      this.filteredItems = []; // This action will remove the dropdown
+      this.searchTerm = '';
+      console.log('Dropdown menu cleared by blur event.');
+    }, 150); // Delay of 150ms
+
+  }
+
   onItemSelected(item: string): void {
     // Display a notification
-    alert(`You selected: ${item}`);
-
+    this.queries = ["1", "2", "3"]
+    this.selectedItem = item
+    
     // Optional: Clear the search bar after selection
-    this.searchTerm = '';
+    //this.searchTerm = '';
     this.filteredItems = [];
   }
 

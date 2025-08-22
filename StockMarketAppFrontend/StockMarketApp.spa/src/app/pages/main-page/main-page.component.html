@@ -9,9 +9,11 @@
     placeholder="Search stocks..." 
     [(ngModel)]="searchTerm"
     (input)="onSearchChange()"
+    (focus)="onSearchFocus()" 
+    (blur)="onSearchBlur()"
     class="search-input">
 
-    <div class="dropdown-menu" *ngIf="searchTerm && filteredItems.length > 0">
+    <div class="dropdown-menu" *ngIf="filteredItems.length > 0">
       <ul class="search-results">
         <li *ngFor="let item of filteredItems" (click)="onItemSelected(item)">
           {{ item }}
@@ -23,11 +25,13 @@
 
 <!-- Results -->
   <div class="card results" *ngIf="queries && queries.length > 0;">
-    <ul>
+    <h2 class="sub-title">{{ selectedItem }}</h2>
+    <div style="background-color: red; width: 300px; height: 300px;"></div>
+    <!-- <ul>
       <li *ngFor="let query of queries">
-        <!-- {{ stock.symbol }} — {{ stock.name }} -->
+        {{ stock.symbol }} — {{ stock.name }}
       </li>
-    </ul>
+    </ul> -->
   </div>
 
   <!-- Actions -->

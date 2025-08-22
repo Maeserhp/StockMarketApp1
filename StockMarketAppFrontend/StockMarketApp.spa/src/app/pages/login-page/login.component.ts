@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../../services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,11 +10,14 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: [
+    '../../styles/shared.css',
+    './login.component.css'
+  ]
 })
 export class LoginComponent {
-  username = 'testuser'; // Example
-  password = 'password'; // Example
+  username = ''; 
+  password = ''; 
   error: string | null = null;
 
   constructor(private authService: AuthService, private router: Router) {}

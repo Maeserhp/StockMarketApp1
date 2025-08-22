@@ -1,0 +1,20 @@
+
+
+
+<div class="container">
+  <!-- Header -->
+  <h1 class="title">Welcome</h1>
+
+  <!-- Login -->
+  <div class="card actions">
+
+    <input class="search-input" type="text" [(ngModel)]="username" placeholder="Username">
+    <input class="search-input" type="password" [(ngModel)]="password" placeholder="Password">
+    <button class="btn primary" (click)="login()">Login</button>
+    <div class="message" *ngIf="error">
+    {{ error }}
+    </div>
+    
+  </div>
+
+</div>
