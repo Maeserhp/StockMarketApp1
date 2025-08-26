@@ -1,0 +1,115 @@
+/* Container for the table */
+.data-grid-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid #ddd;
+  border-radius: 1rem;
+}
+
+.info{
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif; /* modern sans-free alternative */
+    margin: 0;
+}
+
+/* Base table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+
+/* Header styling */
+th {
+  background-color: #4a5568; /* A dark, modern gray */
+  color: #ffffff;
+  font-weight: 600; /* Bolder font weight */
+  padding: 12px 16px;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+/* Cell styling */
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0; /* Light gray for separators */
+  color: #4a5568;
+}
+
+/* Zebra-striping for readability */
+tr:nth-child(even) {
+  background-color: #f7fafc; /* Very light gray for alternating rows */
+}
+
+/* Hover effect on rows for user interaction feedback */
+tr:hover {
+  background-color: #ebf4ff; /* Light blue on hover */
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+/* Styling for the first column (e.g., the date) to make it stand out a bit */
+td:first-child {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+
+
+
+
+.modal-overlay {
+    /* position: fixed; */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 1rem;
+    /* display: none; Hidden by default */
+    justify-content: center;
+    align-items: center;
+    /* z-index: 1000; */
+    max-width: 70%;
+    font-family: 'Segoe UI', Helvetica, Arial, sans-serif; /* modern sans-free alternative */
+
+}
+
+/* Modal Content: The box that stands out */
+.modal-content {
+    background: linear-gradient(135deg, #1f2937, #4b5563); /* Bold dark gradient */
+    color: #e5e7eb;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); /* Strong shadow to make it pop */
+    text-align: center;
+    /* position: relative; */
+    /* max-width: 100%;
+    width: 400px; */
+    border: 2px solid #8B5CF6; /* A pop of vibrant color */
+    /* animation: fadeIn 0.3s ease-in-out; */
+}
+
+/* @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+} */
+
+.modal-content h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    /* margin-bottom: 0.5rem; */
+    letter-spacing: -0.05em;
+    margin: 0;
+
+}
+
+.modal-content p {
+    font-size: 1.125rem;
+    color: #d1d5db;
+    margin: 0;
+}
+

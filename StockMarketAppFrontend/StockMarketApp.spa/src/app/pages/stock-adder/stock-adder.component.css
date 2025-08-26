@@ -1,0 +1,81 @@
+input{
+    margin: 5px
+}
+
+.results {
+  margin-top: 1rem;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.options-list li {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.options-list li:hover {
+  background-color: #eaeaea;
+  transform: scale(1.01);
+}
+
+.options-list li.selected {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers children horizontally */
+  gap: 1rem; /* space between subtitle and input/button */
+}
+
+.text-input-container .input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between input and button */
+}
+
+.search-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+
+
+.actions {
+  position: relative !important;
+}
+
+.cancel-button {
+  margin: 5px;
+  max-width: 80px;
+  margin-right: 100px;
+  background: none;
+  border: #888;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 4px;
+  color: #888;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.cancel-button:hover {
+  color: #333; 
+  border:#333; 
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 4px;
+}

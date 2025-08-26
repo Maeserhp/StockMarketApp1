@@ -81,10 +81,14 @@ namespace StockMarketApp.APIWorker
             return quote;
         }
 
-
-        public async Task<string> FinnhubLookupSymbol(string symbol)
+        /// <summary>
+        /// Searches stocks that are similar to the query 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns>a list of stockSymbols that are simialr to the query</returns>
+        public async Task<StockSearchResponse> FinnhubLookupSymbol(string query)
         {
-            _logger.LogInformation($"Attempting to get a quote for {symbol}");
+            _logger.LogInformation($"Attempting to get a quote for {query}");
 
             var apiKey = _configuration["Finnhub_API_Key"];
             if (apiKey != null)
@@ -93,7 +97,7 @@ namespace StockMarketApp.APIWorker
             }
 
             var exchange = "US";
-            string url = new Uri(_baseUri, $"search?q={Uri.EscapeDataString(symbol)}&exchange={Uri.EscapeDataString(exchange)}&token={Uri.EscapeDataString(apiKey)}").ToString();
+            string url = new Uri(_baseUri, $"search?q={Uri.EscapeDataString(query)}&exchange={Uri.EscapeDataString(exchange)}&token={Uri.EscapeDataString(apiKey)}").ToString();
             using var httpClient = new HttpClient();
 
             HttpResponseMessage response;
@@ -118,16 +122,9 @@ namespace StockMarketApp.APIWorker
 
 
             string json = await response.Content.ReadAsStringAsync();
-            var data = JsonSerializer.Deserialize<SearchResponse>(json);
-            var firstSymbol = data?.result?.FirstOrDefault()?.symbol;
-            if (string.IsNullOrWhiteSpace(firstSymbol))
-            {
-                _logger.LogWarning("No symbols found in Finnhub response for query: {Symbol}", symbol);
-                return null;
-            }
-
-            _logger.LogInformation("The query has selected the following symbol: {Symbol}", symbol);
-            return firstSymbol;
+            var data = JsonSerializer.Deserialize<StockSearchResponse>(json);
+          
+            return data;
         }
 
         /// <summary>
@@ -137,12 +134,10 @@ namespace StockMarketApp.APIWorker
         /// <param name="stockSymbolContainer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> AddStockSymbolToCosmos(string userSubmitedSymbol, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<string> AddStockSymbolToCosmos(string symbol, CancellationToken cancellationToken = new CancellationToken())
         {
             try
             {
-                var symbol = await FinnhubLookupSymbol(userSubmitedSymbol);
-
                 var stockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
                 StockHistory stock = new Shared.Models.StockHistory(symbol);
                 ItemResponse<StockHistory> response = await stockHistoryContainer.CreateItemAsync(stock);
@@ -158,7 +153,7 @@ namespace StockMarketApp.APIWorker
         }
 
 
-        public async Task<int> GetDailyQueries(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<int> PerformDailyQueries(CancellationToken cancellationToken = new CancellationToken())
         {
             var existingStockHistories = await GetExistingStockHistories(cancellationToken);
 
@@ -218,7 +213,11 @@ namespace StockMarketApp.APIWorker
             }
         }
 
-
+        /// <summary>
+        /// Gets the stock histories of all the stocks currently being tracked
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         private async Task<List<StockHistory>> GetExistingStockHistories(CancellationToken cancellationToken)
         {
             var StockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
@@ -241,7 +240,51 @@ namespace StockMarketApp.APIWorker
             return stocks;
         }
 
+        /// <summary>
+        /// Gets the stock history for a specific stock symbol
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<StockHistory?> GetSelectedStockHistory(string symbol, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(symbol))
+            {
+                _logger.LogWarning("GetSelectedStockHistory was called with an invalid symbol.");
+                return null;
+            }
 
-        
+            var stockHistoryContainer = _db?.GetContainer(_stockHistoryContainerName);
+            if (stockHistoryContainer == null)
+            {
+                _logger.LogError("Stock history container is null. Check database initialization.");
+                return null;
+            }
+
+            try
+            {
+                ItemResponse<StockHistory> response = await stockHistoryContainer.ReadItemAsync<StockHistory>(
+                    symbol,
+                    new PartitionKey(symbol),
+                    cancellationToken: cancellationToken
+                );
+
+                if (response?.Resource == null)
+                {
+                    _logger.LogWarning("No stock history found for symbol: {Symbol}", symbol);
+                    return null;
+                }
+
+                _logger.LogInformation("Found history for Stock: {StockId}", response.Resource.id);
+                return response.Resource;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving stock history for symbol: {Symbol}", symbol);
+                throw; 
+            }
+        }
+
+
     }
 }

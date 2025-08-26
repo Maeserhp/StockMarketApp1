@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Models
 {
-    public class SearchResponse
+    public class StockSearchResponse
     {
         public int count { get; set; }
         public List<SearchResultItem> result { get; set; }

@@ -1,0 +1,42 @@
+<div class="actions">
+  <button *ngIf="currentStep === 'text-input' || currentStep === 'option-selection'" class="btn cancel-button" (click)="reset()">cancel</button>
+
+  <button *ngIf="currentStep === 'initial'" class="btn primary" (click)="startProcess()">+ Add New Stock</button>
+
+  <div *ngIf="currentStep === 'text-input'" class="text-input-container">
+    <p class="sub-title">Enter company name or stock symbol to look up.</p>
+    <div class="input-row">
+      <input id="search-input" class="search-input"
+             [(ngModel)]="enteredText"
+             type="text"
+             placeholder="e.g. or AAPL">
+      <button class="btn primary"
+              [disabled]="!enteredText || enteredText.length === 0"
+              (click)="searchText()">
+        Search
+      </button>
+    </div>
+  </div>
+
+
+  <div class="results" *ngIf="currentStep === 'option-selection'">
+    <p class="sub-title">{{stocksResultsTitle}}</p>
+    <ul class="options-list">
+      <li *ngFor="let option of options"
+          (click)="selectedOption(option)"
+          [class.selected]="option === chosenOption">
+        {{ option }}
+      </li>
+    </ul>
+  <button class="btn primary" (click)="submitOption()" [disabled]="!chosenOption">
+    Submit
+  </button>
+</div>
+
+
+  <div *ngIf="currentStep === 'complete' || currentStep === 'failed'">
+    <p *ngIf="currentStep === 'complete'" class="sub-title">Submission handled!</p>
+    <p *ngIf="currentStep === 'failed'" class="sub-title">Sorry! There was an error when trying to add the new stock. It may already be listed.</p>
+    <button class="btn primary" (click)="reset()">Done</button>
+  </div>
+</div>

@@ -24,20 +24,57 @@
   </div>
 
 <!-- Results -->
-  <div class="card results" *ngIf="queries && queries.length > 0;">
+  <div class="card results actions" *ngIf="stockHistory">
     <h2 class="sub-title">{{ selectedItem }}</h2>
-    <div style="background-color: red; width: 300px; height: 300px;"></div>
-    <!-- <ul>
-      <li *ngFor="let query of queries">
-        {{ stock.symbol }} — {{ stock.name }}
-      </li>
-    </ul> -->
+    <p class="info">Stock History</p>
+    <div *ngIf="dailyQuotes && dailyQuotes.length > 0" class="data-grid-container" >
+      <table >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Open Price</th>
+            <th>Close Price</th>
+            <th>Daily High</th>
+            <th>Daily Low</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let quote of dailyQuotes">
+          <td>{{ quote.date | date:'shortDate' }}</td>
+          <td>{{ quote.o | currency }}</td>
+          <td>{{ quote.c | currency }}</td>
+          <td>{{ quote.h | currency }}</td>
+          <td>{{ quote.l | currency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="dailyQuotes && dailyQuotes.length == 0" class="message">
+      No data has been recorded for this stock
+    </div>
+    <button class="btn secondary" (click)="onCheckPrice()">Check Current Price</button>
+
+     <div *ngIf="showCurrentQuote" id="stockModal" class="modal-overlay">
+        <div class="modal-content">
+            
+            <h3 id="stockPrice">{{selectedCurrentQuote?.c | currency}}</h3>
+            <p>Current Price</p>
+            
+            <hr class="my-4 border-gray-600" />
+            
+            <p class="text-xs text-gray-400">Recorded on</p>
+            <p id="timestamp" class="text-sm font-semibold mt-1">{{ (Date.now() | date:'short') }}</p>
+        </div>
+    </div>
+
   </div>
 
   <!-- Actions -->
-  <div class="card actions">
+  <!-- <div class="card actions">
     <button class="btn primary" (click)="onAddStock()">+ Add Stock</button>
-    <button class="btn secondary" (click)="onRunUpdate()">Run Daily Update</button>
-  </div>
+  </div> -->
+  <app-stock-adder class="card" (itemAdded)="onNewStockAdded($event)"></app-stock-adder>
+
 
 </div>
+

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Serialization.HybridRow;
 using Shared.Models;
 
 
@@ -71,13 +72,39 @@ namespace StockMarketApp.APIWorker.Controllers
             }
         }
 
+        [HttpGet("stock-history/{symbol}")]
+        public async Task<ActionResult<StockHistory>> GetStockHistory(string symbol)
+        {
+            // Basic validation
+            if (string.IsNullOrEmpty(symbol))
+            {
+                return BadRequest("Symbol cannot be empty."); // HTTP 400
+            }
+
+            try
+            {
+                var result = await _worker.GetSelectedStockHistory(symbol);
+
+                if (result == null)
+                {
+                    return NotFound($"Stock symbol '{symbol}' not found."); // HTTP 404
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while retrieving the stock quote."); // HTTP 500
+            }
+        }
+
         // PUT api/<StocksController>/5
         [HttpPost("daily-query-update")]
         public async Task<IActionResult> DailyUpdate()
         {
             try
             {
-                var stocksUpdatedCount = await _worker.GetDailyQueries();
+                var stocksUpdatedCount = await _worker.PerformDailyQueries();
                 return Ok($"{stocksUpdatedCount} Daily stock queries initiated and completed successfully.");
             }
             catch (Exception ex)
@@ -88,13 +115,36 @@ namespace StockMarketApp.APIWorker.Controllers
         }
 
         // PUT api/<StocksController>/5
+        [HttpGet("search-stocks/{query}")]
+        public async Task<ActionResult<StockSearchResponse>> SearchStocks(string query)
+        {
+            try
+            {
+                var resultOptions = await _worker.FinnhubLookupSymbol(query);
+
+                if (resultOptions == null)
+                {
+                    return NotFound($"Stock symbol '{resultOptions}' not found."); // HTTP 404
+                }
+
+                return Ok(resultOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding the new symbol.");
+                return StatusCode(500, "An error occurred while adding the new symbol.");
+            }
+        }
+
+
+        // PUT api/<StocksController>/5
         [HttpPost("add-new-symbol/{symbol}")]
         public async Task<IActionResult> AddNewSymbol(string symbol)
         {
             try
             {
                 var symbolAdded = await _worker.AddStockSymbolToCosmos(symbol);
-                return Ok($"The symbol '{symbolAdded}' was found and successfully added.");
+                return Ok($"The symbol '{symbolAdded}' was successfully added.");
             }
             catch (Exception ex)
             {
