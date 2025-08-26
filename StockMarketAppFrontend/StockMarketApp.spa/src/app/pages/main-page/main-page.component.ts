@@ -108,4 +108,30 @@ export class MainPageComponent implements OnInit {
   onNewStockAdded(newItem: string) {
     this.items.push(newItem);
   }
+
+  onDeleteStock(): void {
+    const isConfirmed = confirm('Warning: If you delete this stock, it will no longer be tracked and you will lose access to all its historical data. Do you wish to continue?');
+      console.log('Stock deletion confirmed. Proceeding with the deletion process...');
+
+    if (isConfirmed) {
+
+      this.stockService.deleteStock(this.selectedItem).subscribe({
+        next: () => {
+          console.log('Stock deleted successfully.');
+          this.items = this.items.filter(item => item !== this.selectedItem);
+          this.selectedItem = "";
+          this.stockHistory = undefined;
+          this.dailyQuotes = [];
+          this.showCurrentQuote = false;
+          this.selectedCurrentQuote = undefined;
+        },
+        error: (err) => {
+          console.error('Failed to delete stock:', err);
+        }
+      });
+
+    } else {
+      console.log('Stock deletion cancelled.');
+    }
+  }
 }

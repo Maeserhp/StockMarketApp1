@@ -180,3 +180,15 @@ button:disabled {
   font-size: 1rem;
   color: #666;
 }
+
+
+.btn.delete {
+  background-color: #dc3545; /* A bright red color */
+  color: white; /* White text for contrast */
+  border: 1px solid #dc3545;
+}
+
+.btn.delete:hover {
+  background-color: #c82333; /* A slightly darker red on hover */
+  border-color: #bd2130;
+}

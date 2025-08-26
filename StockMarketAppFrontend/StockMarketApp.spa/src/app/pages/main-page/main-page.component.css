@@ -113,3 +113,10 @@ td:first-child {
     margin: 0;
 }
 
+.flex-container {
+  display: flex;
+  gap: 10px; /* This adds a gap between the buttons for better spacing */
+  justify-content: center; /* This centers the buttons within the container */
+}
+
+

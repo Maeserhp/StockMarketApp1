@@ -1,5 +1,5 @@
 <div class="actions">
-  <button *ngIf="currentStep === 'text-input' || currentStep === 'option-selection'" class="btn cancel-button" (click)="reset()">cancel</button>
+  <button *ngIf="currentStep === 'text-input' || currentStep === 'option-selection'" class="btn delete cancel-button" (click)="reset()">cancel</button>
 
   <button *ngIf="currentStep === 'initial'" class="btn primary" (click)="startProcess()">+ Add New Stock</button>
 

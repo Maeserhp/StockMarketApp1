@@ -114,7 +114,7 @@ namespace StockMarketApp.APIWorker.Controllers
             }
         }
 
-        // PUT api/<StocksController>/5
+        // GET api/<StocksController>/5
         [HttpGet("search-stocks/{query}")]
         public async Task<ActionResult<StockSearchResponse>> SearchStocks(string query)
         {
@@ -145,6 +145,22 @@ namespace StockMarketApp.APIWorker.Controllers
             {
                 var symbolAdded = await _worker.AddStockSymbolToCosmos(symbol);
                 return Ok($"The symbol '{symbolAdded}' was successfully added.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding the new symbol.");
+                return StatusCode(500, "An error occurred while adding the new symbol.");
+            }
+        }
+
+        // PUT api/<StocksController>/5
+        [HttpPost("stop-tracking-stock/{symbol}")]
+        public async Task<IActionResult> StopTrackingStock(string symbol)
+        {
+            try
+            {
+                await _worker.MarkStockUntracked(symbol);
+                return Ok($"The symbol '{symbol}' is no longer being trackedd.");
             }
             catch (Exception ex)
             {

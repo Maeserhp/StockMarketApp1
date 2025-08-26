@@ -52,7 +52,11 @@
     <div *ngIf="dailyQuotes && dailyQuotes.length == 0" class="message">
       No data has been recorded for this stock
     </div>
-    <button class="btn secondary" (click)="onCheckPrice()">Check Current Price</button>
+
+    <div class="flex-container">
+      <button class="btn delete" (click)="onDeleteStock()">Delete Stock </button>
+      <button class="btn secondary" (click)="onCheckPrice()">Check Current Price</button>
+    </div>
 
      <div *ngIf="showCurrentQuote" id="stockModal" class="modal-overlay">
         <div class="modal-content">

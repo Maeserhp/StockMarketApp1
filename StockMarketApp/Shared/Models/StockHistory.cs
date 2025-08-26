@@ -10,6 +10,7 @@ namespace Shared.Models
     public class StockHistory
     {
         public string id { get; set; }
+        public bool IsActivelyTracked { get; set; } = true;
         public DateTime CreatedOn { get; set; }
         public DateTime LastUpdated { get; set; }
         public List<Quote> QuoteHistory { get; set; }

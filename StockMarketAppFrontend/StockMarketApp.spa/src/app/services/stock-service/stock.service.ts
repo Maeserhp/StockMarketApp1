@@ -50,4 +50,12 @@ export class StockService {
     );
   }
 
+  deleteStock(symbol: string): Observable<string> {
+    return this.http.post(
+      `${this.apiUrl}/stop-tracking-stock/${symbol}`,
+      undefined,
+      { responseType: 'text' }
+    );
+  }
+
 }

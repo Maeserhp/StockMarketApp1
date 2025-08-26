@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using Azure;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Shared.Models;
 using System.Linq;
@@ -28,25 +29,9 @@ namespace StockMarketApp.APIWorker
             _db = _cosmosClient.GetDatabase(_configuration["CosmosDb:Database"]);
         }
 
-        public async Task<List<string>> GetSymbolsList(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<List<string>> GetSymbolsList(bool getActiveOnly = true, CancellationToken cancellationToken = new CancellationToken())
         {
-            var stockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
-
-            List<StockHistory> StockHistories = new List<StockHistory>();
-
-            //var query = new QueryDefinition("SELECT * FROM c");
-            FeedIterator<StockHistory> iterator = stockHistoryContainer.GetItemQueryIterator<StockHistory>();
-
-            //iterates through each page of results
-            while (iterator.HasMoreResults)
-            {
-                FeedResponse<StockHistory> response = await iterator.ReadNextAsync(cancellationToken);
-                foreach (var item in response)
-                {
-                    _logger.LogInformation($"Found item: {item}");
-                    StockHistories.Add(item);
-                }
-            }
+            List<StockHistory> StockHistories = await GetExistingStockHistories(getActiveOnly, cancellationToken);
 
             List<string> symbols = new List<string>() { };
             foreach (var history in StockHistories) { 
@@ -139,6 +124,25 @@ namespace StockMarketApp.APIWorker
             try
             {
                 var stockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
+                List<StockHistory> existingStockHistories = await GetExistingStockHistories(false, cancellationToken);
+
+                StockHistory existingStock = existingStockHistories.FirstOrDefault(x => x.id == symbol);
+                if(existingStock != null)
+                {
+                    if (existingStock.IsActivelyTracked)
+                    {
+                        throw new InvalidOperationException($"A stock with symbol '{symbol}' is already actively tracked in the database.");
+                    }
+                    else
+                    {
+                        //The stock already exists, but its been disabled. Let's re-enable it!
+                        existingStock.IsActivelyTracked = true;
+                        ItemResponse<StockHistory> updateResponse = await stockHistoryContainer.ReplaceItemAsync(existingStock, existingStock.id, new PartitionKey(existingStock.id));
+                        _logger.LogInformation($"Stock '{symbol}', attempted re-activate with statusCode '{updateResponse.StatusCode}'. '{updateResponse.RequestCharge}' RU's were used for this call");
+                        return symbol;
+                    }
+                }
+
                 StockHistory stock = new Shared.Models.StockHistory(symbol);
                 ItemResponse<StockHistory> response = await stockHistoryContainer.CreateItemAsync(stock);
 
@@ -155,9 +159,9 @@ namespace StockMarketApp.APIWorker
 
         public async Task<int> PerformDailyQueries(CancellationToken cancellationToken = new CancellationToken())
         {
-            var existingStockHistories = await GetExistingStockHistories(cancellationToken);
+            var existingStockHistories = await GetExistingStockHistories(true, cancellationToken);
 
-            var stocksToUpdate = existingStockHistories.Where(x => x.LastUpdated < DateTime.Today).ToList();
+            var stocksToUpdate = existingStockHistories.Where(x => x.LastUpdated < DateTime.Today && x.IsActivelyTracked).ToList();
 
             var stocksUpdatedCount = 0;
             foreach (var stock in stocksToUpdate)
@@ -218,7 +222,7 @@ namespace StockMarketApp.APIWorker
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task<List<StockHistory>> GetExistingStockHistories(CancellationToken cancellationToken)
+        private async Task<List<StockHistory>> GetExistingStockHistories(bool getActiveOnly = true, CancellationToken cancellationToken = new CancellationToken())
         {
             var StockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
 
@@ -232,8 +236,12 @@ namespace StockMarketApp.APIWorker
                 FeedResponse<StockHistory> response = await iterator.ReadNextAsync(cancellationToken);
                 foreach (var item in response)
                 {
-                    _logger.LogInformation($"Found Tracked Stock: {item}");
-                    stocks.Add(item);
+                    if ((getActiveOnly && item.IsActivelyTracked) || !getActiveOnly)
+                    {
+                        _logger.LogInformation($"Found Tracked Stock: {item}");
+                        stocks.Add(item);
+                    }
+                        
                 }
             }
 
@@ -285,6 +293,38 @@ namespace StockMarketApp.APIWorker
             }
         }
 
+        public async Task MarkStockUntracked(string symbol, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var stockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
+
+                ItemResponse<StockHistory> response = await stockHistoryContainer.ReadItemAsync<StockHistory>(
+                    symbol,
+                    new PartitionKey(symbol),
+                    cancellationToken: cancellationToken
+                );
+
+                if (response?.Resource == null)
+                {
+                    _logger.LogWarning("No stock history found for symbol: {Symbol}", symbol);
+                    throw new NullReferenceException($"No stock history found for symbol: {symbol}");
+                }
+
+                _logger.LogInformation("Found history for Stock: {StockId}", response.Resource.id);
+
+                var existingStockHistory = response.Resource;
+                existingStockHistory.IsActivelyTracked = false;
+
+                response = await stockHistoryContainer.ReplaceItemAsync(existingStockHistory, existingStockHistory.id, new PartitionKey(existingStockHistory.id));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving stock history for symbol: {Symbol}", symbol);
+                throw;
+            }
+        }
 
     }
 }
