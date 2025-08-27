@@ -65,7 +65,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") // Change to your Angular app's URL
+            policy.WithOrigins("http://localhost:4200", "https://stockmarketappcapstone-baduapd7dkcdcah2.canadacentral-01.azurewebsites.net") // Change to your Angular app's URL
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
