@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarketApp.APIWorker", "StockMarketApp.APIWorker\StockMarketApp.APIWorker.csproj", "{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMarketApp.APIWorker.NUnitTest", "StockMarketApp.APIWorker.NUnitTest\StockMarketApp.APIWorker.NUnitTest.csproj", "{5138A319-7AE8-4A75-B31C-3D6CF4998474}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B6B0E34-8B5A-4B86-B71F-D006C83F8580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5138A319-7AE8-4A75-B31C-3D6CF4998474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5138A319-7AE8-4A75-B31C-3D6CF4998474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5138A319-7AE8-4A75-B31C-3D6CF4998474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5138A319-7AE8-4A75-B31C-3D6CF4998474}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,23 +8,24 @@ using System.Text.Json;
 
 namespace StockMarketApp.APIWorker
 {
-    public class Worker //: BackgroundService //Seems like this doesn't really need to be a background service as none of it's functions run coninuoulsy.
+    public class Worker:IWorker
     {
         private readonly ILogger<Worker> _logger;
         private readonly IConfiguration _configuration;
         private readonly CosmosClient _cosmosClient;
+        private readonly HttpClient _httpClient;
 
         private readonly Uri _baseUri = new Uri("https://finnhub.io/api/v1/");
         private readonly string _stockHistoryContainerName = "StockHistory";
 
-
         private Database _db;
 
-        public Worker(ILogger<Worker> logger, IConfiguration configuration, CosmosClient cosmosClient)
+        public Worker(ILogger<Worker> logger, IConfiguration configuration, CosmosClient cosmosClient, HttpClient httpClient)
         {
             _logger = logger;
             _configuration = configuration;
             _cosmosClient = cosmosClient;
+            _httpClient = httpClient;
 
             _db = _cosmosClient.GetDatabase(_configuration["CosmosDb:Database"]);
         }
@@ -53,8 +54,7 @@ namespace StockMarketApp.APIWorker
             //string url = $"https://finnhub.io/api/v1/quote?symbol={symbol}&token={apiKey}";
             string url = new Uri(_baseUri, $"quote?symbol={Uri.EscapeDataString(symbol)}&token={Uri.EscapeDataString(apiKey)}").ToString();
 
-            using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync(url);
             _logger.LogInformation("Request sent to FinnHub");
 
             var responseMessage = response.EnsureSuccessStatusCode();
@@ -83,13 +83,12 @@ namespace StockMarketApp.APIWorker
 
             var exchange = "US";
             string url = new Uri(_baseUri, $"search?q={Uri.EscapeDataString(query)}&exchange={Uri.EscapeDataString(exchange)}&token={Uri.EscapeDataString(apiKey)}").ToString();
-            using var httpClient = new HttpClient();
 
             HttpResponseMessage response;
             try
             {
                 _logger.LogInformation("Sending request to Finnhub: {Url}", url);
-                response = await httpClient.GetAsync(url);
+                response = await _httpClient.GetAsync(url);
             }
             catch (HttpRequestException ex)
             {
@@ -176,7 +175,7 @@ namespace StockMarketApp.APIWorker
         }
 
 
-        private async Task UpsertQuoteHistory(string symbol, Quote quote, List<StockHistory> existingStockHistories)
+        public async Task UpsertQuoteHistory(string symbol, Quote quote, List<StockHistory> existingStockHistories)
         {
             var quoteHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
 
@@ -222,7 +221,7 @@ namespace StockMarketApp.APIWorker
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task<List<StockHistory>> GetExistingStockHistories(bool getActiveOnly = true, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<List<StockHistory>> GetExistingStockHistories(bool getActiveOnly = true, CancellationToken cancellationToken = new CancellationToken())
         {
             var StockHistoryContainer = _db.GetContainer(_stockHistoryContainerName);
 
