@@ -39,6 +39,8 @@ builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
 
 });
 
+builder.Services.AddHttpClient();
+
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
